@@ -6,6 +6,7 @@ import psutil
 import subprocess
 import os
 from dotenv import load_dotenv
+import logging
 
 PROCESSO = 'discord'
 CAMINHO_EXE = r'C:\Users\suporte\Desktop\impressaodireta\ImpressaoDireta.exe'
@@ -13,6 +14,12 @@ CAMINHO_EXE = r'C:\Users\suporte\Desktop\impressaodireta\ImpressaoDireta.exe'
 #CARREGANDO O ENV
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s',
+    handlers=[logging.FileHandler('debug.log', encoding='utf-8'), logging.StreamHandler()]
+)
 
 class botImpressoes(discord.Client):
     def __init__(self):
@@ -31,7 +38,7 @@ class botImpressoes(discord.Client):
     async def on_message(self, message):
         message.content = (message.content.lower())
         if any(role.name == "admin" for role in message.author.roles) and "restart" in message.content:
-            for proc in psutil.process_iter(['pid', 'name']):
+            for proc in psutil.process_iter(['name']):
                 if PROCESSO in proc.info['name'].lower():
                     try:
                         proc.kill() 
