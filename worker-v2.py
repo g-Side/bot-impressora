@@ -76,16 +76,21 @@ class botImpressoes(discord.Client):
                 try:
                     if PROCESSO.lower() in proc.info['name'].lower():
                         processo_encontrado = True
-                        # proc.kill()  # Descomente para matar o processo
+                        proc.kill()
                         await message.channel.send(f'✅ Processo {PROCESSO} encontrado e finalizado. Cliente = {CLIENTE}')
-                        # subprocess.Popen([CAMINHO_EXE])
-                        # await message.channel.send(f' Processo reiniciado')
+                        subprocess.Popen([CAMINHO_EXE])
+                        await message.channel.send(f' Processo reiniciado')
                         break
+
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                     continue
             
-            if not processo_encontrado:
-                await message.channel.send(f'❌ Processo {PROCESSO} não encontrado.')
+            if processo_encontrado:
+                subprocess.Popen([CAMINHO_EXE])
+                await message.channel.send(f'Processo reiniciado')
+            else:
+                subprocess.Popen([CAMINHO_EXE])
+                await message.channel.send(f'Processo iniciado.')
         else:
             # Responde apenas se o comando foi tentado mas sem permissão
             if "restart" in message.content:
