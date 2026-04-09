@@ -8,12 +8,10 @@ import os
 from dotenv import load_dotenv
 import logging
 import subprocess
+from pathlib import Path
 
-PROCESSO = 'javaw'
-CAMINHO_EXE = r'C:\Users\suporte\Desktop\impressaodireta\ImpressaoDireta.exe'
-
-# CARREGANDO O ENV
 load_dotenv()
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 if TOKEN is None:
     print('Token vazio. Preencher com um token')
@@ -22,15 +20,29 @@ if TOKEN is None:
 CLIENTE = os.getenv('CLIENTE')
 if CLIENTE is None:
     print('Cliente não configurado no .env')
-    CLIENTE = ''
+    exit(1)
 else:
     CLIENTE = CLIENTE.lower()
+
+CAMINHO_EXE = os.getenv('CAMINHO_EXE')
+if CAMINHO_EXE is None:
+    print('Variável "CAMINHO_EXE" não preenchida no env. Favor corrigir.')
+    exit(1)
+else:
+    CAMINHO_EXE = Path(CAMINHO_EXE)
+
+PROCESSO = os.getenv('PROCESSO')
+if PROCESSO is None:
+    print('Variável "PROCESSO" não preenchida no env. Favor corrigir.')
+    exit(1)
+
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
     handlers=[logging.FileHandler('debug.log', encoding='utf-8'), logging.StreamHandler()]
 )
+
 
 class botImpressoes(discord.Client):
     def __init__(self):
@@ -57,14 +69,12 @@ class botImpressoes(discord.Client):
         # Verifica permissões
         if isinstance(message.author, discord.Member):
             is_admin = any(role.name == "admin" for role in message.author.roles)
-
         else:
             is_admin = False
             
         has_restart = "restart" in message.content
         has_cliente = CLIENTE in message.content if CLIENTE else False
         bot_grafana = "Grafana" in message.author.name
-
         
         if bot_grafana and has_restart and has_cliente or is_admin and has_restart and has_cliente:
             await message.channel.send(f'Verificando processo {PROCESSO}...')
