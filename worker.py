@@ -65,8 +65,8 @@ class botImpressoes(discord.Client):
         has_cliente = CLIENTE in message.content if CLIENTE else False
         bot_grafana = "Grafana" in message.author.name
 
-        # Verifica se todos os requisitos estão preenchidos
-        if is_admin or (bot_grafana and has_restart and has_cliente):
+        
+        if bot_grafana and has_restart and has_cliente or is_admin and has_restart and has_cliente:
             await message.channel.send(f'Verificando processo {PROCESSO}...')
             
             processo_encontrado = False
