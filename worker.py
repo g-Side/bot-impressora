@@ -28,8 +28,6 @@ CAMINHO_EXE = os.getenv('CAMINHO_EXE')
 if CAMINHO_EXE is None:
     print('Variável "CAMINHO_EXE" não preenchida no env. Favor corrigir.')
     exit(1)
-else:
-    CAMINHO_EXE = Path(CAMINHO_EXE)
 
 PROCESSO = os.getenv('PROCESSO')
 if PROCESSO is None:
@@ -88,8 +86,6 @@ class botImpressoes(discord.Client):
                         processo_encontrado = True
                         proc.kill()
                         await message.channel.send(f'✅ Processo {PROCESSO} encontrado e finalizado. Cliente = {CLIENTE}')
-                        subprocess.Popen([CAMINHO_EXE])
-                        await message.channel.send(f' Processo reiniciado')
                         break
 
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
